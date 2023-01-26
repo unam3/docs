@@ -2,16 +2,6 @@
 
 A common need for data binding is manipulating an element's class list and inline styles. Since `class` and `style` are both attributes, we can use `v-bind` to assign them a string value dynamically, much like with other attributes. However, trying to generate those values using string concatenation can be annoying and error-prone. For this reason, Vue provides special enhancements when `v-bind` is used with `class` and `style`. In addition to strings, the expressions can also evaluate to objects or arrays.
 
-## Binding HTML Classes {#binding-html-classes}
-
-<div class="options-api">
-  <VueSchoolLink href="https://vueschool.io/lessons/dynamic-css-classes-with-vue-3" title="Free Vue.js Dynamic CSS Classes Lesson"/>
-</div>
-
-<div class="composition-api">
-  <VueSchoolLink href="https://vueschool.io/lessons/vue-fundamentals-capi-dynamic-css-classes-with-vue" title="Free Vue.js Dynamic CSS Classes Lesson"/>
-</div>
-
 ### Binding to Objects {#binding-to-objects}
 
 We can pass an object to `:class` (short for `v-bind:class`) to dynamically toggle classes:
@@ -63,39 +53,8 @@ It will render:
 
 When `isActive` or `hasError` changes, the class list will be updated accordingly. For example, if `hasError` becomes `true`, the class list will become `"static active text-danger"`.
 
-The bound object doesn't have to be inline:
 
-<div class="composition-api">
-
-```js
-const classObject = reactive({
-  active: true,
-  'text-danger': false
-})
-```
-
-</div>
-
-<div class="options-api">
-
-```js
-data() {
-  return {
-    classObject: {
-      active: true,
-      'text-danger': false
-    }
-  }
-}
-```
-
-</div>
-
-```vue-html
-<div :class="classObject"></div>
-```
-
-This will render the same result. We can also bind to a [computed property](./computed) that returns an object. This is a common and powerful pattern:
+We can also bind to a [computed property](./computed) that returns an object:
 
 <div class="composition-api">
 
@@ -138,8 +97,6 @@ computed: {
 
 ### Binding to Arrays {#binding-to-arrays}
 
-We can bind `:class` to an array to apply a list of classes:
-
 <div class="composition-api">
 
 ```js
@@ -172,25 +129,9 @@ Which will render:
 <div class="active text-danger"></div>
 ```
 
-If you would like to also toggle a class in the list conditionally, you can do it with a ternary expression:
-
-```vue-html
-<div :class="[isActive ? activeClass : '', errorClass]"></div>
-```
-
-This will always apply `errorClass`, but `activeClass` will only be applied when `isActive` is truthy.
-
-However, this can be a bit verbose if you have multiple conditional classes. That's why it's also possible to use the object syntax inside array syntax:
-
-```vue-html
-<div :class="[{ active: isActive }, errorClass]"></div>
-```
-
 ### With Components {#with-components}
 
-> This section assumes knowledge of [Components](/guide/essentials/component-basics). Feel free to skip it and come back later.
-
-When you use the `class` attribute on a component with a single root element, those classes will be added to the component's root element, and merged with any existing class already on it.
+When you use the `class` attribute on a [component](/guide/essentials/component-basics) with a single root element, those classes will be added to the component's root element, and merged with any existing class already on it.
 
 For example, if we have a component named `MyComponent` with the following template:
 
@@ -212,6 +153,7 @@ The rendered HTML will be:
 <p class="foo bar baz boo">Hi!</p>
 ```
 
+<!--
 The same is true for class bindings:
 
 ```vue-html
@@ -223,6 +165,8 @@ When `isActive` is truthy, the rendered HTML will be:
 ```vue-html
 <p class="foo bar active">Hi!</p>
 ```
+-->
+
 
 If your component has multiple root elements, you would need to define which element will receive this class. You can do this using the `$attrs` component property:
 
