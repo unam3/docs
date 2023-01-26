@@ -5,7 +5,7 @@ outline: deep
 # Reactivity Fundamentals {#reactivity-fundamentals}
 
 :::tip API Preference
-This page and many other chapters later in the guide contain different content for Options API and Composition API. Your current preference is <span class="options-api">Options API</span><span class="composition-api">Composition API</span>. You can toggle between the API styles using the "API Preference" switches at the top of the left sidebar.
+This page and many other chapters later in the guide contain different content for Options API and Composition API. Your current preference is <span class="options-api">Options API</span><span class="composition-api">Composition API</span>.
 :::
 
 ## Declaring Reactive State {#declaring-reactive-state}
@@ -75,7 +75,10 @@ import { reactive } from 'vue'
 const state = reactive({ count: 0 })
 ```
 
-Reactive objects are [JavaScript Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) and behave just like normal objects. The difference is that Vue is able to track the property access and mutations of a reactive object. If you are curious about the details, we explain how Vue's reactivity system works in [Reactivity in Depth](/guide/extras/reactivity-in-depth.html) - but we recommend reading it after you have finished the main guide.
+Reactive objects are [JavaScript Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) and behave just like normal objects. The difference is that Vue is able to track the property access and mutations of a reactive object. If you are curious about the details, we explain how Vue's reactivity system works in [Reactivity in Depth](/guide/extras/reactivity-in-depth.html).
+
+<details>
+<summary>Manually exposing state and methods via `setup()`</summary>
 
 See also: [Typing Reactive](/guide/typescript/composition-api.html#typing-reactive) <sup class="vt-badge ts" />
 
@@ -130,10 +133,9 @@ Exposed methods are typically used as event listeners:
   {{ state.count }}
 </button>
 ```
+</details>
 
-### `<script setup>` \*\* {#script-setup}
-
-Manually exposing state and methods via `setup()` can be verbose. Luckily, it is only necessary when not using a build step. When using Single-File Components (SFCs), we can greatly simplify the usage with `<script setup>`:
+### SFC `<script setup>` \*\* {#script-setup}
 
 ```vue
 <script setup>
