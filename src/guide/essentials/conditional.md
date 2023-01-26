@@ -1,13 +1,5 @@
 # Conditional Rendering {#conditional-rendering}
 
-<div class="options-api">
-  <VueSchoolLink href="https://vueschool.io/lessons/conditional-rendering-in-vue-3" title="Free Vue.js Conditional Rendering Lesson"/>
-</div>
-
-<div class="composition-api">
-  <VueSchoolLink href="https://vueschool.io/lessons/vue-fundamentals-capi-conditionals-in-vue" title="Free Vue.js Conditional Rendering Lesson"/>
-</div>
-
 <script setup>
 import { ref } from 'vue'
 const awesome = ref(true)
@@ -88,7 +80,7 @@ Because `v-if` is a directive, it has to be attached to a single element. But wh
 
 ## `v-show` {#v-show}
 
-Another option for conditionally displaying an element is the `v-show` directive. The usage is largely the same:
+Another option for conditionally displaying an element is the `v-show` directive:
 
 ```vue-html
 <h1 v-show="ok">Hello!</h1>
