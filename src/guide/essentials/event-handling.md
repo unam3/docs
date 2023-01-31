@@ -1,5 +1,6 @@
 # Event Handling {#event-handling}
 
+<!--
 <div class="options-api">
   <VueSchoolLink href="https://vueschool.io/lessons/user-events-in-vue-3" title="Free Vue.js Events Lesson"/>
 </div>
@@ -7,10 +8,10 @@
 <div class="composition-api">
   <VueSchoolLink href="https://vueschool.io/lessons/vue-fundamentals-capi-user-events-in-vue-3" title="Free Vue.js Events Lesson"/>
 </div>
-
+-->
 ## Listening to Events {#listening-to-events}
 
-We can use the `v-on` directive, which we typically shorten to the `@` symbol, to listen to DOM events and run some JavaScript when they're triggered. The usage would be `v-on:click="handler"` or with the shortcut, `@click="handler"`.
+We can use the `v-on` directive (`@`) to listen DOM events. The usage would be `v-on:click="handler"` or with the shortcut, `@click="handler"`.
 
 The handler value can be one of the following:
 
@@ -176,7 +177,7 @@ methods: {
 
 ## Accessing Event Argument in Inline Handlers {#accessing-event-argument-in-inline-handlers}
 
-Sometimes we also need to access the original DOM event in an inline handler. You can pass it into a method using the special `$event` variable, or use an inline arrow function:
+To access the original DOM event in an inline handler, use the special `$event` variable, or use an inline arrow function:
 
 ```vue-html
 <!-- using $event special variable -->
@@ -223,7 +224,7 @@ methods: {
 
 It is a very common need to call `event.preventDefault()` or `event.stopPropagation()` inside event handlers. Although we can do this easily inside methods, it would be better if the methods can be purely about data logic rather than having to deal with DOM event details.
 
-To address this problem, Vue provides **event modifiers** for `v-on`. Recall that modifiers are directive postfixes denoted by a dot.
+Vue provides **event modifiers** for `v-on`:
 
 - `.stop`
 - `.prevent`
