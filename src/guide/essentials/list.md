@@ -1,5 +1,6 @@
 # List Rendering {#list-rendering}
 
+<!--
 <div class="options-api">
   <VueSchoolLink href="https://vueschool.io/lessons/list-rendering-in-vue-3" title="Free Vue.js List Rendering Lesson"/>
 </div>
@@ -7,10 +8,11 @@
 <div class="composition-api">
   <VueSchoolLink href="https://vueschool.io/lessons/vue-fundamentals-capi-list-rendering-in-vue" title="Free Vue.js List Rendering Lesson"/>
 </div>
+-->
 
 ## `v-for` {#v-for}
 
-We can use the `v-for` directive to render a list of items based on an array. The `v-for` directive requires a special syntax in the form of `item in items`, where `items` is the source data array and `item` is an **alias** for the array element being iterated on:
+We can use the `v-for` directive to render a list of items in the form of `item in items`:
 
 <div class="composition-api">
 
@@ -38,7 +40,7 @@ data() {
 </li>
 ```
 
-Inside the `v-for` scope, template expressions have access to all parent scope properties. In addition, `v-for` also supports an optional second alias for the index of the current item:
+Inside the `v-for` scope, template expressions have access to all parent scope properties. `v-for` also supports an optional second alias for the index of the current item:
 
 <div class="composition-api">
 
@@ -88,6 +90,7 @@ const items = [{ message: 'Foo' }, { message: 'Bar' }]
 
 </div>
 
+<!--
 The variable scoping of `v-for` is similar to the following JavaScript:
 
 ```js
@@ -110,7 +113,6 @@ Notice how the `v-for` value matches the function signature of the `forEach` cal
   {{ message }}
 </li>
 
-<!-- with index alias -->
 <li v-for="({ message }, index) in items">
   {{ message }} {{ index }}
 </li>
@@ -125,6 +127,7 @@ For nested `v-for`, scoping also works similar to nested functions. Each `v-for`
   </span>
 </li>
 ```
+-->
 
 You can also use `of` as the delimiter instead of `in`, so that it is closer to JavaScript's syntax for iterators:
 
@@ -134,7 +137,7 @@ You can also use `of` as the delimiter instead of `in`, so that it is closer to 
 
 ## `v-for` with an Object {#v-for-with-an-object}
 
-You can also use `v-for` to iterate through the properties of an object. The iteration order will be based on the result of calling `Object.keys()` on the object:
+You can also use `v-for` to iterate through the properties of an object as with `Object.keys()`:
 
 <div class="composition-api">
 
@@ -251,7 +254,7 @@ This can be fixed by moving `v-for` to a wrapping `<template>` tag (which is als
 
 ## Maintaining State with `key` {#maintaining-state-with-key}
 
-When Vue is updating a list of elements rendered with `v-for`, by default it uses an "in-place patch" strategy. If the order of the data items has changed, instead of moving the DOM elements to match the order of the items, Vue will patch each element in-place and make sure it reflects what should be rendered at that particular index.
+When Vue is updating `v-for` results by default it uses an "in-place patch" strategy: if the order of the data items has changed, Vue will render elements according to their index, instead of moving the DOM elements to match the order of the items.
 
 This default mode is efficient, but **only suitable when your list render output does not rely on child component state or temporary DOM state (e.g. form input values)**.
 
@@ -263,6 +266,7 @@ To give Vue a hint so that it can track each node's identity, and thus reuse and
 </div>
 ```
 
+<!--
 When using `<template v-for>`, the `key` should be placed on the `<template>` container:
 
 ```vue-html
@@ -275,6 +279,7 @@ When using `<template v-for>`, the `key` should be placed on the `<template>` co
 `key` here is a special attribute being bound with `v-bind`. It should not be confused with the property key variable when [using `v-for` with an object](#v-for-with-an-object).
 :::
 
+-->
 [It is recommended](/style-guide/rules-essential.html#use-keyed-v-for) to provide a `key` attribute with `v-for` whenever possible, unless the iterated DOM content is simple (i.e. contains no components or stateful DOM elements), or you are intentionally relying on the default behavior for performance gains.
 
 The `key` binding expects primitive values - i.e. strings and numbers. Do not use objects as `v-for` keys. For detailed usage of the `key` attribute, please see the [`key` API documentation](/api/built-in-special-attributes.html#key).
@@ -329,7 +334,7 @@ Vue is able to detect when a reactive array's mutation methods are called and tr
 
 ### Replacing an Array {#replacing-an-array}
 
-Mutation methods, as the name suggests, mutate the original array they are called on. In comparison, there are also non-mutating methods, e.g. `filter()`, `concat()` and `slice()`, which do not mutate the original array but **always return a new array**. When working with non-mutating methods, we should replace the old array with the new one:
+When working with non-mutating methods, we should replace the old array with the new one:
 
 <div class="composition-api">
 
@@ -347,13 +352,11 @@ this.items = this.items.filter((item) => item.message.match(/Foo/))
 
 </div>
 
-You might think this will cause Vue to throw away the existing DOM and re-render the entire list - luckily, that is not the case. Vue implements some smart heuristics to maximize DOM element reuse, so replacing an array with another array containing overlapping objects is a very efficient operation.
+Replacing an array with another array containing overlapping objects is a very efficient operation.
 
 ## Displaying Filtered/Sorted Results {#displaying-filtered-sorted-results}
 
-Sometimes we want to display a filtered or sorted version of an array without actually mutating or resetting the original data. In this case, you can create a computed property that returns the filtered or sorted array.
-
-For example:
+Sometimes we want to display a filtered or sorted version of an array without actually mutating or resetting the original data. In this case, you can create a computed property that returns the filtered or sorted array:
 
 <div class="composition-api">
 
