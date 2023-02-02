@@ -1,18 +1,18 @@
 # Template Refs {#template-refs}
 
-While Vue's declarative rendering model abstracts away most of the direct DOM operations for you, there may still be cases where we need direct access to the underlying DOM elements. To achieve this, we can use the special `ref` attribute:
+When we need direct access to the underlying DOM elements, we can use the special `ref` attribute:
 
 ```vue-html
 <input ref="input">
 ```
 
-`ref` is a special attribute, similar to the `key` attribute discussed in the `v-for` chapter. It allows us to obtain a direct reference to a specific DOM element or child component instance after it's mounted. This may be useful when you want to, for example, programmatically focus an input on component mount, or initialize a 3rd party library on an element.
+It allows us to obtain a direct reference to a specific DOM element or child component instance after it's mounted. This may be useful when you want to focus an input on component mount or initialize a 3rd party library on an element.
 
 ## Accessing the Refs {#accessing-the-refs}
 
 <div class="composition-api">
 
-To obtain the reference with Composition API, we need to declare a ref with the same name:
+We need to declare a ref with the same name:
 
 ```vue
 <script setup>
