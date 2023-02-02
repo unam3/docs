@@ -2,7 +2,7 @@
 
 ## Basic Example {#basic-example}
 
-Computed properties allow us to declaratively compute derived values. However, there are cases where we need to perform "side effects" in reaction to state changes - for example, mutating the DOM, or changing another piece of state based on the result of an async operation.
+When we need to perform "side effects" in reaction to state changes - mutating the DOM or changing another piece of state based on the result of an async operation
 
 <div class="options-api">
 
@@ -65,7 +65,7 @@ export default {
 
 <div class="composition-api">
 
-With Composition API, we can use the [`watch` function](/api/reactivity-core.html#watch) to trigger a callback whenever a piece of reactive state changes:
+… we can use the [`watch` function](/api/reactivity-core.html#watch) to trigger a callback when reactive state changes:
 
 ```vue
 <script setup>
@@ -222,7 +222,7 @@ Deep watch requires traversing all nested properties in the watched object, and 
 
 ## Eager Watchers {#eager-watchers}
 
-`watch` is lazy by default: the callback won't be called until the watched source has changed. But in some cases we may want the same callback logic to be run eagerly - for example, we may want to fetch some initial data, and then re-fetch the data whenever relevant state changes.
+In some cases we may want the same callback logic to be run eagerly: to fetch initial data and then re-fetch the data whenever relevant state changes.
 
 <div class="options-api">
 
@@ -425,7 +425,7 @@ const unwatch = watchEffect(() => {})
 unwatch()
 ```
 
-Note that there should be very few cases where you need to create watchers asynchronously, and synchronous creation should be preferred whenever possible. If you need to wait for some async data, you can make your watch logic conditional instead:
+Note that there should be very few cases where you need to create watchers asynchronously. If you need to wait for some async data, you can make your watch logic conditional instead:
 
 ```js
 // data to be loaded asynchronously
