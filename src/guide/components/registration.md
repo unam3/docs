@@ -1,8 +1,11 @@
 # Component Registration {#component-registration}
 
+<!--
+>>>>>>> 0483551 (components registration was edited)
 > This page assumes you've already read the [Components Basics](/guide/essentials/component-basics). Read that first if you are new to components.
 
 <VueSchoolLink href="https://vueschool.io/lessons/vue-3-global-vs-local-vue-components" title="Free Vue.js Component Registration Lesson"/>
+-->
 
 A Vue component needs to be "registered" so that Vue knows where to locate its implementation when it is encountered in a template. There are two ways to register components: global and local.
 
@@ -126,13 +129,13 @@ export default {
 }
 ```
 
-Note that **locally registered components are _not_ also available in descendant components**. In this case, `ComponentA` will be made available to the current component only, not any of its child or descendant components.
+Note that **locally registered components are _not_ available in descendant components**.
 
 ## Component Name Casing {#component-name-casing}
 
 Throughout the guide, we are using PascalCase names when registering components. This is because:
 
-1. PascalCase names are valid JavaScript identifiers. This makes it easier to import and register components in JavaScript. It also helps IDEs with auto-completion.
+1. PascalCase names are valid JavaScript identifiers.
 
 2. `<PascalCase />` makes it more obvious that this is a Vue component instead of a native HTML element in templates. It also differentiates Vue components from custom elements (web components).
 
