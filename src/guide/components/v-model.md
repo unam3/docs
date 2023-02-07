@@ -275,15 +275,17 @@ export default {
 
 ## Handling `v-model` modifiers {#handling-v-model-modifiers}
 
-When we were learning about form input bindings, we saw that `v-model` has [built-in modifiers](/guide/essentials/forms.html#modifiers) - `.trim`, `.number` and `.lazy`. In some cases, you might also want the `v-model` on your custom input component to support custom modifiers.
+`v-model` has [built-in modifiers](/guide/essentials/forms.html#modifiers) - `.trim`, `.number` and `.lazy`.
 
-Let's create an example custom modifier, `capitalize`, that capitalizes the first letter of the string provided by the `v-model` binding:
+You can create custom modifiers for component for `v-model`.
+
+Let's create an example custom modifier: `capitalize`.
 
 ```vue-html
 <MyComponent v-model.capitalize="myText" />
 ```
 
-Modifiers added to a component `v-model` will be provided to the component via the `modelModifiers` prop. In the below example, we have created a component that contains a `modelModifiers` prop that defaults to an empty object:
+Modifiers added to a component `v-model` will be provided to the component via the `modelModifiers` prop. In the example we have created a component that contains a `modelModifiers` prop that defaults to an empty object:
 
 <div class="composition-api">
 
@@ -340,7 +342,7 @@ export default {
 
 Notice the component's `modelModifiers` prop contains `capitalize` and its value is `true` - due to it being set on the `v-model` binding `v-model.capitalize="myText"`.
 
-Now that we have our prop set up, we can check the `modelModifiers` object keys and write a handler to change the emitted value. In the code below we will capitalize the string whenever the `<input />` element fires an `input` event.
+We can check the `modelModifiers` object keys and write a handler to change the emitted value. We will capitalize the string whenever the `<input />` element fires an `input` event.
 
 <div class="composition-api">
 
