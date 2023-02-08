@@ -6,7 +6,7 @@
 
 ## Slot Content and Outlet {#slot-content-and-outlet}
 
-We have learned that components can accept props, which can be JavaScript values of any type. But how about template content? In some cases, we may want to pass a template fragment to a child component, and let the child component render the fragment within its own template.
+In some cases we want to pass a template fragment to a child component and let the child component render the fragment within its own template.
 
 For example, we may have a `<FancyButton>` component that supports usage like this:
 
@@ -122,30 +122,6 @@ We might want the text "Submit" to be rendered inside the `<button>` if the pare
 </button>
 ```
 
-Now when we use `<SubmitButton>` in a parent component, providing no content for the slot:
-
-```vue-html
-<SubmitButton />
-```
-
-This will render the fallback content, "Submit":
-
-```html
-<button type="submit">Submit</button>
-```
-
-But if we provide content:
-
-```vue-html
-<SubmitButton>Save</SubmitButton>
-```
-
-Then the provided content will be rendered instead:
-
-```html
-<button type="submit">Save</button>
-```
-
 <div class="composition-api">
 
 [Try it in the Playground](https://sfc.vuejs.org/#eyJBcHAudnVlIjoiPHNjcmlwdCBzZXR1cD5cbmltcG9ydCBTdWJtaXRCdXR0b24gZnJvbSAnLi9TdWJtaXRCdXR0b24udnVlJ1xuPC9zY3JpcHQ+XG5cbjx0ZW1wbGF0ZT5cbiAgPCEtLSB1c2UgZmFsbGJhY2sgdGV4dCAtLT5cbiAgPFN1Ym1pdEJ1dHRvbiAvPlxuICBcbiAgPCEtLSBwcm92aWRlIGN1c3RvbSB0ZXh0IC0tPlxuICA8U3VibWl0QnV0dG9uPlNhdmU8L1N1Ym1pdEJ1dHRvbj5cbjwvdGVtcGxhdGU+IiwiaW1wb3J0LW1hcC5qc29uIjoie1xuICBcImltcG9ydHNcIjoge1xuICAgIFwidnVlXCI6IFwiaHR0cHM6Ly9zZmMudnVlanMub3JnL3Z1ZS5ydW50aW1lLmVzbS1icm93c2VyLmpzXCJcbiAgfVxufSIsIlN1Ym1pdEJ1dHRvbi52dWUiOiI8dGVtcGxhdGU+XG4gIDxidXR0b24gdHlwZT1cInN1Ym1pdFwiPlxuXHQgIDxzbG90PlxuICAgIFx0U3VibWl0IDwhLS0gZmFsbGJhY2sgY29udGVudCAtLT5cbiAgXHQ8L3Nsb3Q+XG5cdDwvYnV0dG9uPlxuPC90ZW1wbGF0ZT4ifQ==)
@@ -192,8 +168,6 @@ For these cases, the `<slot>` element has a special attribute, `name`, which can
 ```
 
 A `<slot>` outlet without `name` implicitly has the name "default".
-
-In a parent component using `<BaseLayout>`, we need a way to pass multiple slot content fragments, each targeting a different slot outlet. This is where **named slots** come in.
 
 To pass a named slot, we need to use a `<template>` element with the `v-slot` directive, and then pass the name of the slot as an argument to `v-slot`:
 
@@ -276,25 +250,6 @@ Now everything inside the `<template>` elements will be passed to the correspond
 
 </div>
 
-Again, it may help you understand named slots better using the JavaScript function analogy:
-
-```js
-// passing multiple slot fragments with different names
-BaseLayout({
-  header: `...`,
-  default: `...`,
-  footer: `...`
-})
-
-// <BaseLayout> renders them in different places
-function BaseLayout(slots) {
-  return `<div class="container">
-      <header>${slots.header}</header>
-      <main>${slots.default}</main>
-      <footer>${slots.footer}</footer>
-    </div>`
-}
-```
 
 ## Dynamic Slot Names {#dynamic-slot-names}
 
@@ -317,11 +272,11 @@ Do note the expression is subject to the [syntax constraints](/guide/essentials/
 
 ## Scoped Slots {#scoped-slots}
 
-As discussed in [Render Scope](#render-scope), slot content does not have access to state in the child component.
+[Slot content does not have access to state in the child component](#render-scope).
 
-However, there are cases where it could be useful if a slot's content can make use of data from both the parent scope and the child scope. To achieve that, we need a way for the child to pass data to a slot when rendering it.
+There are cases where it could be useful if a slot's content can make use of data from both the parent scope and the child scope.
 
-In fact, we can do exactly that - we can pass attributes to a slot outlet just like passing props to a component:
+We can pass attributes to a slot outlet just like passing props to a component:
 
 ```vue-html
 <!-- <MyComponent> template -->
@@ -446,7 +401,7 @@ Using an explicit `<template>` tag for the default slot helps to make it clear t
 
 ### Fancy List Example {#fancy-list-example}
 
-You may be wondering what would be a good use case for scoped slots. Here's an example: imagine a `<FancyList>` component that renders a list of items - it may encapsulate the logic for loading remote data, using the data to display a list, or even advanced features like pagination or infinite scrolling. However, we want it to be flexible with how each item looks and leave the styling of each item to the parent component consuming it. So the desired usage may look like this:
+You may be wondering what would be a good use case for scoped slots. Here's an example: imagine a `<FancyList>` component that renders a list of items - it may encapsulate the logic for loading remote data, using the data to display a list, or pagination or infinite scrolling. We want it to be flexible with how each item looks and leave the styling of each item to the parent component consuming it.
 
 ```vue-html
 <FancyList :api-url="url" :per-page="10">
