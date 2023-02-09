@@ -10,11 +10,14 @@ const vFocus = {
 
 ## Introduction {#introduction}
 
-In addition to the default set of directives shipped in core (like `v-model` or `v-show`), Vue also allows you to register your own custom directives.
 
-We have introduced two forms of code reuse in Vue: [components](/guide/essentials/component-basics.html) and [composables](./composables). Components are the main building blocks, while composables are focused on reusing stateful logic. Custom directives, on the other hand, are mainly intended for reusing logic that involves low-level DOM access on plain elements.
+We have introduced two forms of code reuse in Vue: [components](/guide/essentials/component-basics.html) and [composables](./composables). Components are the main building blocks, while composables are focused on reusing stateful logic.
 
-A custom directive is defined as an object containing lifecycle hooks similar to those of a component. The hooks receive the element the directive is bound to. Here is an example of a directive that focuses an input when the element is inserted into the DOM by Vue:
+**Custom directives are** mainly **intended for** reusing logic that involves **low-level DOM access on plain elements**.
+
+A custom directive is defined as an object containing lifecycle hooks. The hooks receive the element the directive is bound to.
+
+Here is an example of a directive that focuses an input when the element is inserted into the DOM by Vue:
 
 <div class="composition-api">
 
@@ -224,4 +227,6 @@ When used on components, custom directives will always apply to a component's ro
 </div>
 ```
 
-Note that components can potentially have more than one root node. When applied to a multi-root component, a directive will be ignored and a warning will be thrown. Unlike attributes, directives can't be passed to a different element with `v-bind="$attrs"`. In general, it is **not** recommended to use custom directives on components.
+Note that components can potentially have more than one root node. When applied to a multi-root component, a directive will be ignored and a warning will be thrown. Unlike attributes, directives can't be passed to a different element with `v-bind="$attrs"`.
+
+In general it is **not** recommended to use custom directives on components.
