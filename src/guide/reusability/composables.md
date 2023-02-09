@@ -11,11 +11,11 @@ This section assumes basic knowledge of Composition API. If you have been learni
 
 ## What is a "Composable"? {#what-is-a-composable}
 
-In the context of Vue applications, a "composable" is a function that leverages Vue's Composition API to encapsulate and reuse **stateful logic**.
+"Composable" is a function for reuse of **stateful logic**.
 
-When building frontend applications, we often need to reuse logic for common tasks. For example, we may need to format dates in many places, so we extract a reusable function for that. This formatter function encapsulates **stateless logic**: it takes some input and immediately returns expected output. There are many libraries out there for reusing stateless logic - for example [lodash](https://lodash.com/) and [date-fns](https://date-fns.org/), which you may have heard of.
+We often need to reuse logic for common tasks. For example: format dates in many places. So we extract a reusable function for that. This formatter function encapsulates **stateless logic**: it takes some input and immediately returns expected output.
 
-By contrast, stateful logic involves managing state that changes over time. A simple example would be tracking the current position of the mouse on a page. In real-world scenarios, it could also be more complex logic such as touch gestures or connection status to a database.
+Stateful logic involves managing state that changes over time: tracking the current position of the mouse on a page. In real world scenarios, it could also be more complex logic such as touch gestures or connection status to a database.
 
 ## Mouse Tracker Example {#mouse-tracker-example}
 
@@ -88,7 +88,7 @@ const { x, y } = useMouse()
 
 As we can see, the core logic remains identical - all we had to do was move it into an external function and return the state that should be exposed. Just like inside a component, you can use the full range of [Composition API functions](/api/#composition-api) in composables. The same `useMouse()` functionality can now be used in any component.
 
-The cooler part about composables though, is that you can also nest them: one composable function can call one or more other composable functions. This enables us to compose complex logic using small, isolated units, similar to how we compose an entire application using components. In fact, this is why we decided to call the collection of APIs that make this pattern possible Composition API.
+The cooler part about composables though, is that you can also nest them: one composable function can call one or more other composable functions. This enables us to compose complex logic using small, isolated units, similar to how we compose an entire application using components. This is why we decided to call the collection of APIs that make this pattern possible Composition API.
 
 For example, we can extract the logic of adding and removing a DOM event listener into its own composable:
 
@@ -130,7 +130,7 @@ Each component instance calling `useMouse()` will create its own copies of `x` a
 
 ## Async State Example {#async-state-example}
 
-The `useMouse()` composable doesn't take any arguments, so let's take a look at another example that makes use of one. When doing async data fetching, we often need to handle different states: loading, success, and error:
+Let's take a look at another example that use argument. When doing async data fetching, we often need to handle different states: loading, success, and error:
 
 ```vue
 <script setup>
@@ -155,7 +155,7 @@ fetch('...')
 </template>
 ```
 
-It would be tedious to have to repeat this pattern in every component that needs to fetch data. Let's extract it into a composable:
+Let's extract it into a composable:
 
 ```js
 // fetch.js
@@ -184,7 +184,9 @@ const { data, error } = useFetch('...')
 </script>
 ```
 
-`useFetch()` takes a static URL string as input - so it performs the fetch only once and is then done. What if we want it to re-fetch whenever the URL changes? We can achieve that by also accepting refs as an argument:
+`useFetch()` takes a static URL string as input - so it performs the fetch only once and is then done.
+
+What if we want it to re-fetch whenever the URL changes? We can achieve that by also accepting refs as an argument:
 
 ```js
 // fetch.js
@@ -226,7 +228,7 @@ Here's [the updated version of `useFetch()`](https://sfc.vuejs.org/#eyJBcHAudnVl
 
 ### Naming {#naming}
 
-It is a convention to name composable functions with camelCase names that start with "use".
+Name composable functions with camelCase names that start with "use".
 
 ### Input Arguments {#input-arguments}
 
