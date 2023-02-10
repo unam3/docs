@@ -1,8 +1,21 @@
 ﻿# Plugins {#plugins}
 
-## Introduction {#introduction}
+Plugins are self-contained code that usually add app-level functionality to Vue.
 
-Plugins are self-contained code that usually add app-level functionality to Vue. This is how we install a plugin:
+Common scenarios where plugins are useful:
+
+1. Register one or more global components or custom directives with [`app.component()`](/api/application.html#app-component) and [`app.directive()`](/api/application.html#app-directive).
+
+2. Make a resource [injectable](/guide/components/provide-inject.html) throughout the app by calling [`app.provide()`](/api/application.html#app-provide).
+
+3. Add some global instance properties or methods by attaching them to [`app.config.globalProperties`](/api/application.html#app-config-globalproperties).
+
+4. A library that needs to perform some combination of the above (e.g. [vue-router](https://github.com/vuejs/vue-router-next)).
+
+
+## Installation {#introduction}
+
+This is how we install a plugin:
 
 ```js
 import { createApp } from 'vue'
@@ -24,19 +37,9 @@ const myPlugin = {
 }
 ```
 
-There is no strictly defined scope for a plugin, but common scenarios where plugins are useful include:
-
-1. Register one or more global components or custom directives with [`app.component()`](/api/application.html#app-component) and [`app.directive()`](/api/application.html#app-directive).
-
-2. Make a resource [injectable](/guide/components/provide-inject.html) throughout the app by calling [`app.provide()`](/api/application.html#app-provide).
-
-3. Add some global instance properties or methods by attaching them to [`app.config.globalProperties`](/api/application.html#app-config-globalproperties).
-
-4. A library that needs to perform some combination of the above (e.g. [vue-router](https://github.com/vuejs/vue-router-next)).
-
 ## Writing a Plugin {#writing-a-plugin}
 
-In order to better understand how to create your own Vue.js plugins, we will create a very simplified version of a plugin that displays `i18n` (short for [Internationalization](https://en.wikipedia.org/wiki/Internationalization_and_localization)) strings.
+We will create simplified version of a plugin that displays `i18n` (short for [Internationalization](https://en.wikipedia.org/wiki/Internationalization_and_localization)) strings.
 
 Let's begin by setting up the plugin object. It is recommended to create it in a separate file and export it, as shown below to keep the logic contained and separate.
 
@@ -55,7 +58,7 @@ We want to create a translation function. This function will receive a dot-delim
 <h1>{{ $translate('greetings.hello') }}</h1>
 ```
 
-Since this function should be globally available in all templates, we will make it so by attaching it to `app.config.globalProperties` in our plugin:
+We will make this function globally available by attaching it to `app.config.globalProperties` in our plugin:
 
 ```js{4-11}
 // plugins/i18n.js
@@ -97,7 +100,9 @@ Use global properties scarcely, since it can quickly become confusing if too man
 
 ### Provide / Inject with Plugins {#provide-inject-with-plugins}
 
-Plugins also allow us to use `inject` to provide a function or attribute to the plugin's users. For example, we can allow the application to have access to the `options` parameter to be able to use the translations object.
+Plugins allow us to `inject` shit.
+
+For example: `options` parameter, the translations object.
 
 ```js{10}
 // plugins/i18n.js
