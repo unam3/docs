@@ -53,7 +53,9 @@ const greeting = ref('Hello World!')
 
 </div>
 
-As we can see, Vue SFC is a natural extension of the classic trio of HTML, CSS and JavaScript. The `<template>`, `<script>`, and `<style>` blocks encapsulate and colocate the view, logic and styling of a component in the same file. The full syntax is defined in the [SFC Syntax Specification](/api/sfc-spec).
+The `<template>`, `<script>`, and `<style>` blocks encapsulate and colocate the view, logic and styling of a component in the same file.
+
+The full syntax is defined in the [SFC Syntax Specification](/api/sfc-spec).
 
 ## Why SFC {#why-sfc}
 
@@ -74,7 +76,7 @@ SFC is a defining feature of Vue as a framework, and is the recommended approach
 - Static Site Generation (SSG)
 - Any non-trivial frontend where a build step can be justified for better development experience (DX).
 
-That said, we do realize there are scenarios where SFCs can feel like overkill. This is why Vue can still be used via plain JavaScript without a build step. If you are just looking for enhancing largely static HTML with light interactions, you can also check out [petite-vue](https://github.com/vuejs/petite-vue), a 6 kB subset of Vue optimized for progressive enhancement.
+There are scenarios where SFCs can feel like overkill. But Vue can be used via plain JavaScript without a build step. If you are just looking for enhancing largely static HTML with light interactions, you can also check out [petite-vue](https://github.com/vuejs/petite-vue), a 6 kB subset of Vue optimized for progressive enhancement.
 
 ## How It Works {#how-it-works}
 
