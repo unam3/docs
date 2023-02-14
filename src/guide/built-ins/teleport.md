@@ -6,9 +6,9 @@
 
 ## Basic Usage {#basic-usage}
 
-Sometimes we may run into the following scenario: a part of a component's template belongs to it logically, but from a visual standpoint, it should be displayed somewhere else in the DOM, outside of the Vue application.
+Sometimes a part of a component's template belongs to it logically, but from a visual standpoint it should be displayed somewhere else in the DOM, outside of the Vue application.
 
-The most common example of this is when building a full-screen modal. Ideally, we want the modal's button and the modal itself to live within the same component, since they are both related to the open / close state of the modal. But that means the modal will be rendered alongside the button, deeply nested in the application's DOM hierarchy. This can create some tricky issues when positioning the modal via CSS.
+Example of this is when building a full-screen modal. Ideally, we want the modal's button and the modal itself to live within the same component, since they are both related to the open / close state of the modal. But that means the modal will be rendered alongside the button, deeply nested in the application's DOM hierarchy. This can create some tricky issues when positioning the modal via CSS.
 
 Consider the following HTML structure.
 
@@ -111,7 +111,7 @@ When using this component inside the initial HTML structure, there are a number 
 </Teleport>
 ```
 
-The `to` target of `<Teleport>` expects a CSS selector string or an actual DOM node. Here, we are essentially telling Vue to "**teleport** this template fragment **to** the **`body`** tag".
+The `to` target of `<Teleport>` expects a CSS selector string or an actual DOM node. We are telling Vue to "**teleport** this template fragment **to** the **`body`** tag".
 
 You can click the button below and inspect the `<body>` tag via your browser's devtools:
 
