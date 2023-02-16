@@ -4,13 +4,15 @@ import TestingApiSwitcher from './TestingApiSwitcher.vue'
 
 # Testing {#testing}
 
+There is one Vue-specific section covering composables. See [Testing Composables](#testing-composables) below for more details.
+
+<!--
+
 ## Why Test? {#why-test}
 
 Automated tests help you and your team build complex Vue applications quickly and confidently by preventing regressions and encouraging you to break apart your application into testable functions, modules, classes, and components. As with any application, your new Vue app can break in many ways, and it's important that you can catch these issues and fix them before releasing.
 
 In this guide, we'll cover basic terminology and provide our recommendations on which tools to choose for your Vue 3 application.
-
-There is one Vue-specific section covering composables. See [Testing Composables](#testing-composables) below for more details.
 
 ## When to Test {#when-to-test}
 
@@ -29,12 +31,14 @@ Each testing type plays a role in your application's testing strategy and each w
 ## Overview {#overview}
 
 We will briefly discuss what each of these are, how they can be implemented for Vue applications, and provide some general recommendations.
+-->
 
 ## Unit Testing {#unit-testing}
 
-Unit tests are written to verify that small, isolated units of code are working as expected. A unit test usually covers a single function, class, composable, or module. Unit tests focus on logical correctness and only concern themselves with a small portion of the application's overall functionality. They may mock large parts of your application's environment (e.g. initial state, complex classes, 3rd party modules, and network requests).
+Unit tests will catch issues with a function's business logic and logical correctness.
 
-In general, unit tests will catch issues with a function's business logic and logical correctness.
+Unit tests are written to verify that small, isolated units of code are working as expected. A unit test usually covers a single function, class, composable, or module. They may mock large parts of your application's environment (e.g. initial state, complex classes, 3rd party modules, and network requests).
+
 
 Take for example this `increment` function:
 
@@ -71,19 +75,93 @@ describe('increment', () => {
 })
 ```
 
-As mentioned previously, unit testing is typically applied to self-contained business logic, components, classes, modules, or functions that do not involve UI rendering, network requests, or other environmental concerns.
-
-These are typically plain JavaScript / TypeScript modules unrelated to Vue. In general, writing unit tests for business logic in Vue applications does not differ significantly from applications using other frameworks.
+unit testing is typically applied to self-contained business logic, components, classes, modules, or functions that do not involve UI rendering, network requests, or other environmental concerns. These are typically plain JavaScript / TypeScript modules unrelated to Vue.
 
 There are two instances where you DO unit test Vue-specific features:
 
 1. Composables
 2. Components
 
-### Composables {#composables}
+### Testing Composables {#testing-composables}
 
-One category of functions specific to Vue applications are [Composables](/guide/reusability/composables.html), which may require special handling during tests.
-See [Testing Composables](#testing-composables) below for more details.
+> This section assumes you have read the [Composables](/guide/reusability/composables.html) section.
+
+When it comes to testing composables, we can divide them into two categories: composables that do not rely on a host component instance, and composables that do.
+
+A composable depends on a host component instance when it uses the following APIs:
+
+- Lifecycle hooks
+- Provide / Inject
+
+If a composable only uses Reactivity APIs, then it can be tested by directly invoking it and asserting its returned state / methods:
+
+```js
+// counter.js
+import { ref } from 'vue'
+
+export function useCounter() {
+  const count = ref(0)
+  const increment = () => count.value++
+
+  return {
+    count,
+    increment
+  }
+}
+```
+
+```js
+// counter.test.js
+import { useCounter } from './counter.js'
+
+test('useCounter', () => {
+  const { count, increment } = useCounter()
+  expect(count.value).toBe(0)
+
+  increment()
+  expect(count.value).toBe(1)
+})
+```
+
+A composable that relies on lifecycle hooks or Provide / Inject needs to be wrapped in a host component to be tested. We can create a helper like the following:
+
+```js
+// test-utils.js
+import { createApp } from 'vue'
+
+export function withSetup(composable) {
+  let result
+  const app = createApp({
+    setup() {
+      result = composable()
+      // suppress missing template warning
+      return () => {}
+    }
+  })
+  app.mount(document.createElement('div'))
+  // return the result and the app instance
+  // for testing provide / unmount
+  return [result, app]
+}
+```
+```js
+import { withSetup } from './test-utils'
+import { useFoo } from './foo'
+
+test('useFoo', () => {
+  const [result, app] = withSetup(() => useFoo(123))
+  // mock provide for testing injections
+  app.provide(...)
+  // run assertions
+  expect(result.foo.value).toBe(1)
+  // trigger onUnmounted hook if needed
+  app.unmount()
+})
+```
+
+For more complex composables, it could also be easier to test it by writing tests against the wrapper component using [Component Testing](#component-testing) techniques.
+
+
 
 ### Unit Testing Components {#unit-testing-components}
 
@@ -91,11 +169,11 @@ A component can be tested in two ways:
 
 1. Whitebox: Unit Testing
 
-   Tests that are "Whitebox tests" are aware of the implementation details and dependencies of a component. They are focused on **isolating** the component under test. These tests will usually involve mocking some, if not all of your component's children, as well as setting up plugin state and dependencies (e.g. Pinia).
+   "Whitebox tests" are aware of the implementation details and dependencies of a component. They are focused on **isolating** the component under test. These tests will usually involve mocking some, if not all of your component's children, as well as setting up plugin state and dependencies (e.g. Vuex).
 
 2. Blackbox: Component Testing
 
-   Tests that are "Blackbox tests" are unaware of the implementation details of a component. These tests mock as little as possible to test the integration of your component and the entire system. They usually render all child components and are considered more of an "integration test". See the [Component Testing recommendations](#component-testing) below.
+   "Blackbox tests" are unaware of the implementation details of a component. These tests mock as little as possible to test the integration of your component and the entire system. They usually render all child components and are considered more of an "integration test". See the [Component Testing recommendations](#component-testing) below.
 
 ### Recommendation {#recommendation}
 
@@ -111,13 +189,17 @@ A component can be tested in two ways:
 
 ## Component Testing {#component-testing}
 
-In Vue applications, components are the main building blocks of the UI. Components are therefore the natural unit of isolation when it comes to validating your application's behavior. From a granularity perspective, component testing sits somewhere above unit testing and can be considered a form of integration testing. Much of your Vue Application should be covered by a component test and we recommend that each Vue component has its own spec file.
+Checks that your component mounts, renders, can be interacted with, and behaves as expected.
 
-Component tests should catch issues relating to your component's props, events, slots that it provides, styles, classes, lifecycle hooks, and more.
+They should catch issues relating to component's props, events, slots that it provides, styles, classes, lifecycle hooks, and more.
 
-Component tests should not mock child components, but instead test the interactions between your component and its children by interacting with the components as a user would. For example, a component test should click on an element like a user would instead of programmatically interacting with the component.
+Components are the main building blocks of the UI and therefore the natural unit of isolation when it comes to validating application's behavior.
 
-Component tests should focus on the component's public interfaces rather than internal implementation details. For most components, the public interface is limited to: events emitted, props, and slots. When testing, remember to **test what a component does, not how it does it**.
+Much of Vue Application should be covered by a component test and we recommend that each Vue component has its own spec file.
+
+Component tests should test the interactions between a component and its children by interacting with the components as a user would. For example: test should click on an element like a user would.
+
+Component tests should focus on the component's public interfaces: events emitted, props, and slots. When testing, remember to **test what a component does, not how it does it**.
 
 **DO**
 
@@ -217,7 +299,7 @@ The main differences between Vitest and browser-based runners are speed and exec
 
 Component testing often involves mounting the component being tested in isolation, triggering simulated user input events, and asserting on the rendered DOM output. There are dedicated utility libraries that make these tasks simpler.
 
-- [`@testing-library/vue`](https://github.com/testing-library/vue-testing-library) is a Vue testing library focused on testing components without relying on implementation details. Built with accessibility in mind, its approach also makes refactoring a breeze. Its guiding principle is that the more tests resemble the way software is used, the more confidence they can provide.
+- [`@testing-library/vue`](https://github.com/testing-library/vue-testing-library) is a Vue testing library focused on testing components without relying on implementation details. <!--Built with accessibility in mind, its approach also makes refactoring a breeze. Its guiding principle is that the more tests resemble the way software is used, the more confidence they can provide.-->
 
 - [`@vue/test-utils`](https://github.com/vuejs/test-utils) is the official low-level component testing library that was written to provide users access to Vue specific APIs. It's also the lower-level library `@testing-library/vue` is built on top of.
 
@@ -229,11 +311,13 @@ We recommend using `@testing-library/vue` for testing components in applications
 
 ## E2E Testing {#e2e-testing}
 
+<!--
 While unit tests provide developers with some degree of confidence, unit and component tests are limited in their abilities to provide holistic coverage of an application when deployed to production. As a result, end-to-end (E2E) tests provide coverage on what is arguably the most important aspect of an application: what happens when users actually use your applications.
+-->
 
 End-to-end tests focus on multi-page application behavior that makes network requests against your production-built Vue application. They often involve standing up a database or other backend and may even be run against a live staging environment.
 
-End-to-end tests will often catch issues with your router, state management library, top-level components (e.g. an App or Layout), public assets, or any request handling. As stated above, they catch critical issues that may be impossible to catch with unit tests or component tests.
+End-to-end tests will often catch issues with your router, state management library, top-level components, public assets or request handling.
 
 End-to-end tests do not import any of your Vue application's code, but instead rely completely on testing your application by navigating through entire pages in a real browser.
 
@@ -245,31 +329,41 @@ By testing how user actions impact your application, E2E tests are often the key
 
 ### Choosing an E2E Testing Solution {#choosing-an-e2e-testing-solution}
 
-While end-to-end (E2E) testing on the web has gained a negative reputation for unreliable (flaky) tests and slowing down development processes, modern E2E tools have made strides forward to create more reliable, interactive, and useful tests. When choosing an E2E testing framework, the following sections provide some guidance on things to keep in mind when choosing a testing framework for your application.
-
 #### Cross-browser testing {#cross-browser-testing}
 
-One of the primary benefits that end-to-end (E2E) testing is known for is its ability to test your application across multiple browsers. While it may seem desirable to have 100% cross-browser coverage, it is important to note that cross browser testing has diminishing returns on a team's resources due the additional time and machine power required to run them consistently. As a result, it is important to be mindful of this trade-off when choosing the amount of cross-browser testing your application needs.
+<details>
+<summary>be mindful of this trade-off when choosing the amount of cross-browser testing your application needs</summary>
+One of the primary benefits that end-to-end (E2E) testing is known for is its ability to test your application across multiple browsers. It is important to note that cross browser testing has diminishing returns on a team's resources due the additional time and machine power required to run them consistently. It is important to be mindful of this trade-off when choosing the amount of cross-browser testing your application needs.
+</details>
 
 #### Faster feedback loops {#faster-feedback-loops}
 
+<details>
+<summary>CI/CD parallelization and local development</summary>
 One of the primary problems with end-to-end (E2E) tests and development is that running the entire suite takes a long time. Typically, this is only done in continuous integration and deployment (CI/CD) pipelines. Modern E2E testing frameworks have helped to solve this by adding features like parallelization, which allows for CI/CD pipelines to often run magnitudes faster than before. In addition, when developing locally, the ability to selectively run a single test for the page you are working on while also providing hot reloading of tests can help to boost a developer's workflow and productivity.
+</details>
 
 #### First-class debugging experience {#first-class-debugging-experience}
 
+<details>
+<summary>browser dev tools!</summary>
 While developers have traditionally relied on scanning logs in a terminal window to help determine what went wrong in a test, modern end-to-end (E2E) test frameworks allow developers to leverage tools that they are already familiar with, e.g. browser developer tools.
+</details>
 
 #### Visibility in headless mode {#visibility-in-headless-mode}
 
+<details>
+<summary>snapshots and/or videos of the application during testing</summary>
 When end-to-end (E2E) tests are run in continuous integration / deployment pipelines, they are often run in headless browsers (i.e., no visible browser is opened for the user to watch). A critical feature of modern E2E testing frameworks is the ability to see snapshots and/or videos of the application during testing, providing some insight into why errors are happening. Historically, it was tedious to maintain these integrations.
+</details>
 
 ### Recommendation {#recommendation-2}
 
 - [Cypress](https://www.cypress.io/)
 
+<!--
   Overall, we believe Cypress provides the most complete E2E solution with features like an informative graphical interface, excellent debuggability, built-in assertions and stubs, flake-resistance, parallelization, and snapshots. As mentioned above, it also provides support for [Component Testing](https://docs.cypress.io/guides/component-testing/introduction). However, it only supports Chromium-based browsers and Firefox.
-
-### Other Options {#other-options-2}
+  -->
 
 - [Playwright](https://playwright.dev/) is also a great E2E testing solution with a wider range of browser support (mainly WebKit). See [Why Playwright](https://playwright.dev/docs/why-playwright) for more details.
 
@@ -285,7 +379,7 @@ In a Vite-based Vue project, run:
 > npm install -D vitest happy-dom @testing-library/vue
 ```
 
-Next, update the Vite configuration to add the `test` option block:
+Update the Vite configuration to add the `test` option block:
 
 ```js{6-12}
 // vite.config.js
@@ -317,7 +411,7 @@ If you are using TypeScript, add `vitest/globals` to the `types` field in your `
 ```
 :::
 
-Then create a file ending in `*.test.js` in your project. You can place all test files in a test directory in project root, or in test directories next to your source files. Vitest will automatically search for them using the naming convention.
+Create a file ending in `*.test.js` in your project. You can place all test files in a test directory in project root, or in test directories next to your source files. Vitest will automatically search for them using the naming convention.
 
 ```js
 // MyComponent.test.js
@@ -351,84 +445,6 @@ Finally, update `package.json` to add the test script and run it:
 > npm test
 ```
 
-### Testing Composables {#testing-composables}
-
-> This section assumes you have read the [Composables](/guide/reusability/composables.html) section.
-
-When it comes to testing composables, we can divide them into two categories: composables that do not rely on a host component instance, and composables that do.
-
-A composable depends on a host component instance when it uses the following APIs:
-
-- Lifecycle hooks
-- Provide / Inject
-
-If a composable only uses Reactivity APIs, then it can be tested by directly invoking it and asserting its returned state / methods:
-
-```js
-// counter.js
-import { ref } from 'vue'
-
-export function useCounter() {
-  const count = ref(0)
-  const increment = () => count.value++
-
-  return {
-    count,
-    increment
-  }
-}
-```
-
-```js
-// counter.test.js
-import { useCounter } from './counter.js'
-
-test('useCounter', () => {
-  const { count, increment } = useCounter()
-  expect(count.value).toBe(0)
-
-  increment()
-  expect(count.value).toBe(1)
-})
-```
-
-A composable that relies on lifecycle hooks or Provide / Inject needs to be wrapped in a host component to be tested. We can create a helper like the following:
-
-```js
-// test-utils.js
-import { createApp } from 'vue'
-
-export function withSetup(composable) {
-  let result
-  const app = createApp({
-    setup() {
-      result = composable()
-      // suppress missing template warning
-      return () => {}
-    }
-  })
-  app.mount(document.createElement('div'))
-  // return the result and the app instance
-  // for testing provide / unmount
-  return [result, app]
-}
-```
-```js
-import { withSetup } from './test-utils'
-import { useFoo } from './foo'
-
-test('useFoo', () => {
-  const [result, app] = withSetup(() => useFoo(123))
-  // mock provide for testing injections
-  app.provide(...)
-  // run assertions
-  expect(result.foo.value).toBe(1)
-  // trigger onUnmounted hook if needed
-  app.unmount()
-})
-```
-
-For more complex composables, it could also be easier to test it by writing tests against the wrapper component using [Component Testing](#component-testing) techniques.
 
 <!--
 TODO more testing recipes can be added in the future e.g.
