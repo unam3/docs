@@ -1,5 +1,9 @@
 # State Management {#state-management}
 
+<details>
+
+<summary>component's state</summary>
+
 ## What is State Management? {#what-is-state-management}
 
 Technically, every Vue component instance already "manages" its own reactive state. Take a simple counter component as an example:
@@ -72,6 +76,8 @@ For case one, a possible workaround is by "lifting" the shared state up to a com
 For case two, we often find ourselves resorting to solutions such as reaching for direct parent / child instances via template refs, or trying to mutate and synchronize multiple copies of the state via emitted events. Both of these patterns are brittle and quickly lead to unmaintainable code.
 
 A simpler and more straightforward solution is to extract the shared state out of the components, and manage it in a global singleton. With this, our component tree becomes a big "view", and any component can access the state or trigger actions, no matter where they are in the tree!
+
+</details>
 
 ## Simple State Management with Reactivity API {#simple-state-management-with-reactivity-api}
 
@@ -196,9 +202,8 @@ export const store = reactive({
 
 </div>
 
-:::tip
-Note the click handler uses `store.increment()` with parentheses - this is necessary to call the method with the proper `this` context since it's not a component method.
-:::
+<b>Note the click handler uses `store.increment()` with parentheses - this is necessary to call the method with the proper `this` context since it's not a component method.
+</b>
 
 Although here we are using a single reactive object as a store, you can also share reactive state created using other [Reactivity APIs](/api/reactivity-core.html) such as `ref()` or `computed()`, or even return global state from a [Composable](/guide/reusability/composables.html):
 
@@ -223,7 +228,7 @@ The fact that Vue's reactivity system is decoupled from the component model make
 
 ## SSR Considerations {#ssr-considerations}
 
-If you are building an application that leverages [Server-Side Rendering (SSR)](./ssr), the above pattern can lead to issues due to the store being a singleton shared across multiple requests. This is discussed in [more details](./ssr#cross-request-state-pollution) in the SSR guide.
+If you are building an application that leverages Server-Side Rendering (SSR), the above pattern can lead to [issues due to the store being a singleton shared across multiple requests](./ssr#cross-request-state-pollution).
 
 ## Pinia {#pinia}
 
@@ -236,8 +241,11 @@ While our hand-rolled state management solution will suffice in simple scenarios
 
 [Pinia](https://pinia.vuejs.org) is a state management library that implements all of the above. It is maintained by the Vue core team, and works with both Vue 2 and Vue 3.
 
+<details>
+<summary>Obsolete Vuex</summary>
 Existing users may be familiar with [Vuex](https://vuex.vuejs.org/), the previous official state management library for Vue. With Pinia serving the same role in the ecosystem, Vuex is now in maintenance mode. It still works, but will no longer receive new features. It is recommended to use Pinia for new applications.
 
 Pinia started out as an exploration of what the next iteration of Vuex could look like, incorporating many ideas from core team discussions for Vuex 5. Eventually, we realized that Pinia already implements most of what we wanted in Vuex 5, and decided to make it the new recommendation instead.
 
 Compared to Vuex, Pinia provides a simpler API with less ceremony, offers Composition-API-style APIs, and most importantly, has solid type inference support when used with TypeScript.
+</details>
