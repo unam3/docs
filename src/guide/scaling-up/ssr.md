@@ -8,7 +8,7 @@ outline: deep
 
 ### What is SSR? {#what-is-ssr}
 
-Vue.js is a framework for building client-side applications. By default, Vue components produce and manipulate DOM in the browser as output. However, it is also possible to render the same components into HTML strings on the server, send them directly to the browser, and finally "hydrate" the static markup into a fully interactive app on the client.
+It is possible to render components into HTML strings on the server, send them directly to the browser and "hydrate" the static markup into a fully interactive app on the client.
 
 A server-rendered Vue.js app can also be considered "isomorphic" or "universal", in the sense that the majority of your app's code runs on both the server **and** the client.
 
@@ -40,7 +40,7 @@ Before using SSR for your app, the first question you should ask is whether you 
 
 **Static Site Generation (SSG)**, also referred to as pre-rendering, is another popular technique for building fast websites. If the data needed to server-render a page is the same for every user, then instead of rendering the page every time a request comes in, we can render it only once, ahead of time, during the build process. Pre-rendered pages are generated and served as static HTML files.
 
-SSG retains the same performance characteristics of SSR apps: it provides great time-to-content performance. At the same time, it is cheaper and easier to deploy than SSR apps because the output is static HTML and assets. The keyword here is **static**: SSG can only be applied to pages consuming static data, i.e. data that is known at build time and does not change between deploys. Every time the data changes, a new deployment is needed.
+SSG provides great time-to-content performance. It is cheaper and easier to deploy than SSR apps because the output is static HTML and assets. *SSG can only be applied to pages consuming static data*, i.e. data that is known at build time and does not change between deploys. Every time the data changes, a new deployment is needed.
 
 If you're only investigating SSR to improve the SEO of a handful of marketing pages (e.g. `/`, `/about`, `/contact`, etc.), then you probably want SSG instead of SSR. SSG is also great for content-based websites such as documentation sites or blogs. In fact, this website you are reading right now is statically generated using [VitePress](https://vitepress.vuejs.org/), a Vue-powered static site generator.
 
@@ -132,7 +132,7 @@ Finally, run `node server.js` and visit `http://localhost:3000`. You should see 
 
 If you click the button, you'll notice the number doesn't change. The HTML is completely static on the client since we are not loading Vue in the browser.
 
-To make the client-side app interactive, Vue needs to perform the **hydration** step. During hydration, it creates the same Vue application that was run on the server, matches each component to the DOM nodes it should control, and attaches DOM event listeners.
+To make the client-side app interactive, Vue needs to perform the **hydration**: create the same Vue application that was run on the server, match each component to the DOM nodes it should control and attach DOM event listeners.
 
 To mount an app in hydration mode, we need to use [`createSSRApp()`](/api/application.html#createssrapp) instead of `createApp()`:
 
@@ -152,7 +152,7 @@ app.mount('#app')
 
 ### Code Structure {#code-structure}
 
-Notice how we need to reuse the same app implementation as on the server. This is where we need to start thinking about code structure in an SSR app - how do we share the same application code between the server and the client?
+Notice how we need to reuse the same app implementation as on the server. How do we share the same application code between the server and the client?
 
 Here we will demonstrate the most bare-bones setup. First, let's split the app creation logic into a dedicated file, `app.js`:
 
@@ -168,7 +168,7 @@ export function createApp() {
 }
 ```
 
-This file and its dependencies are shared between the server and the client - we call them **universal code**. There are a number of things you need to pay attention to when writing universal code, as we will [discuss below](#writing-ssr-friendly-code).
+This file and its dependencies are shared between the server and the client - we call them [**universal code**](#writing-ssr-friendly-code).
 
 Our client entry imports the universal code, creates the app, and performs the mount:
 
@@ -203,7 +203,7 @@ In addition, in order to load the client files in the browser, we also need to:
 
 ## Higher Level Solutions {#higher-level-solutions}
 
-Moving from the example to a production-ready SSR app involves a lot more. We will need to:
+Moving from the example to a production-ready SSR app involves a lot more:
 
 - Support Vue SFCs and other build step requirements. In fact, we will need to coordinate two builds for the same app: one for the client, and one for the server.
 
@@ -215,7 +215,7 @@ Moving from the example to a production-ready SSR app involves a lot more. We wi
 
 - Manage routing, data fetching, and state management stores in a universal manner.
 
-A complete implementation would be quite complex and depends on the build toolchain you have chosen to work with. Therefore, we highly recommend going with a higher-level, opinionated solution that abstracts away the complexity for you. Below we will introduce a few recommended SSR solutions in the Vue ecosystem.
+A complete implementation would be quite complex and depends on the build toolchain. A few recommended SSR solutions in the Vue ecosystem:
 
 ### Nuxt {#nuxt}
 
@@ -233,7 +233,6 @@ You can also find an example Vue + Vite SSR project using manual setup [here](ht
 
 ## Writing SSR-friendly Code {#writing-ssr-friendly-code}
 
-Regardless of your build setup or higher-level framework choice, there are some principles that apply in all Vue SSR applications.
 
 ### Reactivity on the Server {#reactivity-on-the-server}
 
